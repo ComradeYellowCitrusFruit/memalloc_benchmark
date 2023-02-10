@@ -1,11 +1,12 @@
 #include <cstdio>
 #include <cstdlib>
 #include <ctime>
-#include <thread>
+#include <cstring>
+#include <threads.h>
 #include "mem.hpp"
 #include "mem_int.hpp"
 
-engine::internals::Pool pool;
+engine::internals::Pool engine::internals::pool;
 
 void memallocTest()
 {
@@ -39,16 +40,18 @@ void mallocTest()
 
 int main()
 {
-    pool = engine::internals::Pool();
-    std::thread mallocThread(mallocTest);
-    std::thread memallocThread(memallocTest);
+    engine::internals::pool = engine::internals::Pool();
+    thrd_t mallocThread;
+    thrd_t memallocThread;
+    thrd_create(&mallocThread, (thrd_start_t)mallocTest, NULL);
+    thrd_create(&memallocThread, (thrd_start_t)memallocTest, NULL);
+
     puts( \
             "Performing a benchmark test on the memalloc function of the Citrus Engine against glibc's malloc.\n" \
             "The test allocates 1GB in 2048 byte blocks, and then frees each block.\n" \
             "Starting the test now.\n" \
     );
-    mallocThread.detach();
-    memallocThread.detach();
-    mallocThread.join();
-    memallocThread.join();
-}   
+
+    thrd_detach(mallocThread);
+    thrd_detach(memallocThread);
+}

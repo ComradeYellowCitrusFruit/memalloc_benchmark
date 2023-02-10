@@ -17,14 +17,14 @@
 #endif
 
 #include <cstdint>
-#include <atomic>
+#include <stdatomic.h>
 #include <immintrin.h>
 
 #define POOL_FREE_BLOCK_MAGIC 0x465245454E554D00ull
 #define POOL_ALLOC_BLOCK_MAGIC 0x414C4C4F43454400ull
 
 #ifndef _POOL_SIZE_
-#define _POOL_SIZE_ 1024 * 1024 * 1024 * 2
+#define _POOL_SIZE_ (size_t)(1024 * 1024 * 1024 * 2)
 #endif
 
 namespace engine
@@ -70,7 +70,7 @@ namespace engine
 		{
 			public:
 				// Is the pool locked?
-				std::atomic_flag locked;
+				atomic_flag locked;
 				// The start of the pool
 				poolBlock *start;
 				// The first free section header block
@@ -86,9 +86,9 @@ namespace engine
 				void free(engine::internals::poolBlock *bptr);
 				
 				// Wait
-				static inline void wait()
+				void wait()
 				{
-					while(locked.test_and_set())
+					while(atomic_flag_test_and_set(&locked))
 						_mm_pause();
 					return;
 				}

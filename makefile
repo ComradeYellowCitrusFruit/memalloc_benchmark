@@ -6,10 +6,10 @@ objects := main.o mem.o
 all: test
 
 test: $(objects)
-	$(CXX) $(CXXFLAGS) $^ -o $@
+	$(CXX) $(CXXFLAGS) $^ -o ./bin/$@
 
 main.o: src/main.cpp
-	$(CXX) $(CXXFLAGS) $^ -c -o $@
+	$(CXX) $(CXXFLAGS) $^ -c -o ./bin/$@
 
 mem.o: src/mem.cpp
-	$(CXX) $(CXXFLAGS) $^ -c -o $@
+	$(CXX) $(CXXFLAGS) $^ -c -o ./bin/$@
