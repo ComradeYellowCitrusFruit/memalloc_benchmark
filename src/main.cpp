@@ -2,7 +2,12 @@
 #include <cstdlib>
 #include <ctime>
 #include <cstring>
-#include <threads.h>
+
+extern "C"
+{
+    #include <threads.h>
+}
+
 #include "mem.hpp"
 #include "mem_int.hpp"
 
